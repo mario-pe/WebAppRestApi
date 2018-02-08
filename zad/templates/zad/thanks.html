@@ -1,0 +1,12 @@
+{% extends 'zad/base.html' %}
+
+{% block title %}home{% endblock %}
+
+{% block content %}
+    <h1>Dzieki</h1>
+
+    <h3>wybierz co chcesz zrobic </h3>
+        <li><a href="{% url 'zad:add_file' %}">dodaj plik</a></li>
+        <li><a href="{% url 'zad:add_url' %}">dodaj url</a></li>
+        <li><a href="{% url 'zad:logout' %}">wyloguj</a></li>
+{% endblock %}

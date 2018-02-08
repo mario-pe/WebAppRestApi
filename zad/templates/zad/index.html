@@ -1,0 +1,20 @@
+{% extends 'zad/base.html' %}
+
+{%  block content %}
+    <h1>index</h1>
+        <div>
+            <li><a href="{% url 'zad:logout' %}">wyloguj</a></li>
+        </div>
+        <div>
+            <li><a href="{% url 'zad:login' %}">zaloguj</a></li>
+        </div>
+        <div>
+            <li><a href="{% url 'zad:signup' %}">signup</a></li>
+        </div>
+    {% if info %}
+        <ul>
+        </ul>
+    {% else %}
+        <h3>Brak informacji do wyswietlenia </h3>
+    {% endif %}
+{% endblock %}

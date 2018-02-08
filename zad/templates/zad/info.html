@@ -1,0 +1,21 @@
+{% extends 'zad/base.html' %}
+
+{% block title %}home{% endblock %}
+
+{% block content %}
+   <h1>detale url</h1>
+
+<p>{{ instance_password }}</p>
+<p>{{ instance_app_url }}</p>
+
+    <h3>wybierz co chcesz zrobic </h3>
+    <li><a href="{% url 'zad:add_file' %}">dodaj plik</a></li>
+    <li><a href="{% url 'zad:add_url' %}">dodaj url</a></li>
+    <li><a href="{% url 'zad:logout' %}">wyloguj</a></li>
+
+    {% for u in customerUrls %}
+        <a href='{{ u.get_absolute_url }}'>{{ u.url }}</a>
+    {% endfor %}
+
+
+{% endblock %}

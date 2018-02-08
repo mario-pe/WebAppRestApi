@@ -1,0 +1,21 @@
+{% extends 'zad/base.html' %}
+
+{% block title %}home{% endblock %}
+
+{% block content %}
+    <h1>Jestes zalogowany</h1>
+
+    <h3>wybierz co chcesz zrobic </h3>
+    <li><a href="{% url 'zad:add_file' %}">dodaj plik</a></li>
+    <li><a href="{% url 'zad:add_url' %}">dodaj url</a></li>
+    <li><a href="{% url 'zad:logout' %}">wyloguj</a></li>
+
+    {% for u in customerUrls %}
+       <p> <a href='{{ u.get_absolute_url }}'>{{ u.id }}, {{ u.url }}, {{ u.date }}; </a> {{ u.password }},  {{ u.get_absolute_url }}  {{ u.counter }}</p>
+    {% endfor %}
+    {% for u in customerFiles %}
+
+       <p> <a href='{{ u.get_absolute_url }}'>{{ u.id }}, {{ u.date }}; </a> {{ u.password }},  {{ u.get_absolute_url }}  {{ u.counter }}</p>
+    {% endfor %}
+
+{% endblock %}

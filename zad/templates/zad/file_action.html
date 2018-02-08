@@ -1,0 +1,20 @@
+{% extends 'zad/base.html' %}
+
+{% block title %}home{% endblock %}
+
+{% block content %}
+
+<h3>file action</h3>
+
+<form action="" method="post" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save" />
+</form>
+
+
+    <h3>wybierz co chcesz zrobic </h3>
+        <li><a href="{% url 'zad:add_file' %}">dodaj plik</a></li>
+        <li><a href="{% url 'zad:add_url' %}">dodaj url</a></li>
+        <li><a href="{% url 'zad:logout' %}">wyloguj</a></li>
+{% endblock %}

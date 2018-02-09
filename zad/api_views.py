@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 
 from .models import CustomerUrl, CustomerFile, ActivityArchive
 from .serializers import CustomerUrlSerializer, CustomerFileSerializer
-from .utils import serializer_sever
+from .utils import serializer_saver, update_counter, update_archive_url
 
 
 class Url(APIView):
@@ -28,7 +28,7 @@ class Url(APIView):
     def post(self, request, format=None):
         serializer = CustomerUrlSerializer(data=request.data)
         if serializer.is_valid():
-            serializer_sever(serializer)
+            serializer_saver(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -53,11 +53,14 @@ class Url(APIView):
 
         serializer = CustomerUrlSerializer(instance)
         if request_password == instance.password:
+            update_counter(instance)
+            update_archive_url(instance)
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
 
 class File(APIView):
+
     authentication_classes = (BasicAuthentication,)
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
@@ -70,11 +73,12 @@ class File(APIView):
         file_obj = request.FILES
         serializer = CustomerFileSerializer(data=request.data)
         if serializer.is_valid():
-            serializer_sever(serializer)
+            serializer_saver(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # permission_classes = (AllowAny,)
+class GetFile(APIView):
+    permission_classes = (AllowAny,)
     def put(self, request, format=None):
         data = JSONParser().parse(request)
         request_password = data['password']
@@ -94,6 +98,8 @@ class File(APIView):
 
         serializer = CustomerFileSerializer(instance)
         if request_password == instance.password:
+            update_counter(instance)
+            update_archive_url(instance)    #update_archive_file
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 

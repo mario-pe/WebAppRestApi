@@ -37,6 +37,7 @@ urlpatterns = [
 
     url(r'^urls/$', api_views.Url.as_view()),
     url(r'^files/$', api_views.File.as_view()),
+    url(r'^get_file`/$', api_views.GetFile.as_view()),
     url(r'^archive/(?P<date_from>.+)/(?P<date_to>.+)/$', api_views.ActivityArchiveApi.as_view()),
     #url(r'^urls/(?P<pk>[0-9]+)/(?P<password>.+)/$', api_views.get_url),
     # url(r'^urls/$', api_views.url_add),

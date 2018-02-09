@@ -1,5 +1,4 @@
 /.idea
 /media/
 /zad/migrations/
-/.gitignore.swo
-/.gitignore.swp
+/.gitignore.*

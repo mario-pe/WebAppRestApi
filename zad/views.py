@@ -1,18 +1,14 @@
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, FormView, ModelFormMixin
 
 from zad.forms import AuthForm
 from .models import *
-from django.contrib.auth.base_user import BaseUserManager
-import datetime as idt
-from .utils import password_generator
-
-from django.core.urlresolvers import reverse
+from .utils import password_generator, update_counter, fresh_checker, update_archive_url
 
 
 def index(request):
@@ -104,9 +100,8 @@ class ActionFile(FormView):
         instance = get_object_or_404(CustomerFile, pk=id)
 
         if password == instance.password:
-
             update_counter(instance)
-
+            update_archive_url(instance)  #update_archive_file
             if fresh_checker(instance):
                 instance_file = instance.file
                 filename = instance_file.file.name.split('/')[-1]
@@ -131,6 +126,7 @@ class ActionUrl(FormView):
         instance_url = instance.url
         if password == instance.password:
             update_counter(instance)
+            update_archive_url(instance)
             if fresh_checker(instance):
                 return redirect(instance_url)
             else:
@@ -154,18 +150,5 @@ def signup(request):
     return render(request, 'zad/signup.html', {'form': form})
 
 
-def update_counter(instance):
-    instance.counter = instance.counter + 1
-    instance.save()
 
-
-def fresh_checker(instance):
-    instance_date = instance.date.replace(tzinfo=None)
-    delta = idt.datetime.now() - idt.timedelta(hours=24)
-    print(delta)
-    if instance_date > delta:
-        return True
-    else:
-        instance.delete()
-        return False
 

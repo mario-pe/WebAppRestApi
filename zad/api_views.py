@@ -1,5 +1,4 @@
 from datetime import datetime
-import datetime as idt
 
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
@@ -10,9 +9,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import CustomerUrl, CustomerFile, ActivityArchive
 from .serializers import CustomerUrlSerializer, CustomerFileSerializer
-from .utils import serializer_saver, update_counter, update_archive_url
+from .utils import *
 
 
 class Url(APIView):
@@ -21,6 +19,7 @@ class Url(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get(self, request, format=None):
+        user_agent_support(request)
         urls = CustomerUrl.objects.all()
         serializer = CustomerUrlSerializer(urls, many=True)
         return Response(serializer.data)
@@ -33,7 +32,9 @@ class Url(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class GetUrl(APIView):
     permission_classes = (AllowAny,)
+
     def put(self, request, format=None):
         data = JSONParser().parse(request)
         request_password = data['password']
@@ -64,22 +65,19 @@ class File(APIView):
     authentication_classes = (BasicAuthentication,)
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    def get(self, request, format=None):
-        file = CustomerFile.objects.all()
-        serializer = CustomerFileSerializer(file, many=True)
-        return Response(serializer.data)
-
     def post(self, request):
-        file_obj = request.FILES
         serializer = CustomerFileSerializer(data=request.data)
         if serializer.is_valid():
             serializer_saver(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class GetFile(APIView):
+    authentication_classes = (BasicAuthentication,)
     permission_classes = (AllowAny,)
     def put(self, request, format=None):
+        user_agent_support(request)
         data = JSONParser().parse(request)
         request_password = data['password']
         request_url = data['url']
@@ -90,7 +88,6 @@ class GetFile(APIView):
         else:
             p_url = request_url.split('/')
             id = p_url[-1]
-            print(id)
         try:
             instance = CustomerFile.objects.get(pk=id)
         except CustomerFile.DoesNotExist:
@@ -99,38 +96,43 @@ class GetFile(APIView):
         serializer = CustomerFileSerializer(instance)
         if request_password == instance.password:
             update_counter(instance)
-            update_archive_url(instance)    #update_archive_file
+            update_archive_file(instance)
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
 
-
-
 class ActivityArchiveApi(APIView):
-    def get(self, requset, date_from, date_to):
-        a = datetime.strptime(str(date_from), "%Y-%m-%d")
-        b = datetime.strptime(str(date_to), "%Y-%m-%d")
-        delta = b - a;
+    def get(self, request, date_from, date_to):
+        user_agent_support(request)
+        datetime_from = datetime.strptime(str(date_from), "%Y-%m-%d")
+        datetime_to = datetime.strptime(str(date_to), "%Y-%m-%d")
+        delta = datetime_to - datetime_from;
+        today_date = datetime.utcnow().strftime('%Y-%m-%d')
         response = {}
 
         for x in range(0, delta.days + 1 ):
-           b = a.__str__()
-           b = b[:-9]
-           archive = ActivityArchive.objects.filter(date=b).first()
-           if archive is not None:
-               url = archive.url_activity
-               file = archive.file_activity
-               result = activity_statistcs(url, file)
-               r = {b.__str__():{'files': result[0], 'links': result[1]}}
-           else:
-               r = {b.__str__(): {'files': 0, 'links': 0}}
-           a =  a + idt.timedelta(hours=24)
-           response[b.__str__()] = r
+            datetime_to = datetime_from.__str__()
+            datetime_to = datetime_to[:-9]
+            archive = ActivityArchive.objects.filter(date=datetime_to).first()
+
+            if archive is not None:
+                if datetime_to == today_date:
+                    url = archive.url_activity
+                    file = archive.file_activity
+                    result = activity_statistcs(url, file)
+                    reponse_for_day = {datetime_to.__str__():{'files': result[0], 'links': result[1]}}
+                else:
+                    result = daily_statisctic_generator(archive)
+                    reponse_for_day = {datetime_to.__str__(): {'files': result[0], 'links': result[1]}}
+            else:
+                reponse_for_day = {datetime_to.__str__(): {'files': 0, 'links': 0}}
+
+            datetime_from =  datetime_from + idt.timedelta(hours=24)
+
+            response[datetime_to.__str__()] = reponse_for_day
 
         return JsonResponse(response)
 
 
-def activity_statistcs(urls, files):
 
-    return [len(set(urls.split(','))), len(set(files.split(',')))]
 

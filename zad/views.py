@@ -1,6 +1,6 @@
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
@@ -8,17 +8,16 @@ from django.views.generic.edit import CreateView, FormView, ModelFormMixin
 
 from zad.forms import AuthForm
 from .models import *
-from .utils import password_generator, update_counter, fresh_checker, update_archive_url
+from .utils import *
 
 
 def index(request):
     info = 'info'
     return render(request, 'zad/index.html', {'info': info})
 
-
+@login_required
 def home(request):
-    agent = request.META['HTTP_USER_AGENT']
-    print(agent)
+    user_agent_support(request)
     customerUrls = CustomerUrl.objects.all()
     customerFiles = CustomerFile.objects.all()
     context = {
@@ -28,11 +27,10 @@ def home(request):
 
     return render(request, 'zad/home.html', context)
 
-
+@login_required
 def upload_info(request, id):
-
+    user_agent_support(request)
     instance = get_object_or_404(CustomerUrl, pk=id)
-    # instance = get_object_or_404(CustomerFile, pk=id)
     context = {
         "instance_password": instance.password,
         "instance_app_url": instance.get_absolute_url(),
@@ -40,10 +38,9 @@ def upload_info(request, id):
 
     return render(request, 'zad/info.html', context)
 
-
+@login_required
 def upload_info_file(request, id):
-
-    # instance = get_object_or_404(CustomerUrl, pk=id)
+    user_agent_support(request)
     instance = get_object_or_404(CustomerFile, pk=id)
     context = {
         "instance_password": instance.password,
@@ -54,15 +51,20 @@ def upload_info_file(request, id):
 
 
 class AddUrl(CreateView):
+
     model = CustomerUrl
     fields = ['url']
     success_url = '/zad/home'
 
     def form_valid(self, form):
+        user_agent_support(self.request)
         form.instance.password = password_generator()
         self.object = form.save()
         print('ok valid')
-        return super(ModelFormMixin, self).form_valid(form)  # doczytac o co sie rozchodzi i jak dzialaje te metody
+        return super(ModelFormMixin, self).form_valid(form)
+
+    def form_invalid(self, form):
+        user_agent_support(self.request)
 
     def get_success_url(self):
         print('ok success')
@@ -75,18 +77,16 @@ class AddFile(CreateView):
     success_url = '/zad/home'
 
     def form_valid(self, form):
+        user_agent_support(self.request)
         form.instance.password = password_generator()
         self.object = form.save()
-        return super(ModelFormMixin, self).form_valid(form)  # doczytac o co sie rozchodzi i jak dzialaje te metody
+        return super(ModelFormMixin, self).form_valid(form)
+
+    def form_invalid(self, form):
+        user_agent_support(self.request)
 
     def get_success_url(self):
         return reverse('zad:upload_info_file', args=(self.object.id,))
-
-        # def form_valid(self, form):
-        #     form.instance.password = BaseUserManager().make_random_password()
-        #     print(form.instance.password)
-        #     form.save()
-        #     return redirect('zad:home')
 
 
 class ActionFile(FormView):
@@ -95,23 +95,24 @@ class ActionFile(FormView):
     success_url = '/zad/home'
 
     def form_valid(self, form):
+        user_agent_support(self.request)
         id = self.kwargs['id']
         password = form.cleaned_data['password']
         instance = get_object_or_404(CustomerFile, pk=id)
 
         if password == instance.password:
             update_counter(instance)
-            update_archive_url(instance)  #update_archive_file
-            if fresh_checker(instance):
-                instance_file = instance.file
-                filename = instance_file.file.name.split('/')[-1]
-                response = HttpResponse(instance_file.file, content_type='text/plain')
-                response['Content-Disposition'] = 'attachment; filename=%s' % filename
-                return response
-            else:
-                return redirect('zad:home') # dorzucic info ze niema juz zasobu, moze w innej metodzie i URL
+            update_archive_file(instance)
+            instance_file = instance.file
+            filename = instance_file.file.name.split('/')[-1]
+            response = HttpResponse(instance_file.file, content_type='text/plain')
+            response['Content-Disposition'] = 'attachment; filename=%s' % filename
+            return response
         else:
             return redirect(instance.get_absolute_url())
+
+    def form_invalid(self, form):
+        user_agent_support(self.request)
 
 
 class ActionUrl(FormView):
@@ -120,6 +121,7 @@ class ActionUrl(FormView):
     success_url = '/zad/home'
 
     def form_valid(self, form):
+        user_agent_support(self.request)
         id = self.kwargs['id']
         password = form.cleaned_data['password']
         instance = get_object_or_404(CustomerUrl, pk=id)
@@ -127,13 +129,11 @@ class ActionUrl(FormView):
         if password == instance.password:
             update_counter(instance)
             update_archive_url(instance)
-            if fresh_checker(instance):
-                return redirect(instance_url)
-            else:
-                return redirect('zad:home')
         else:
             return redirect(instance.get_absolute_url())
 
+    def form_invalid(self, form):
+        user_agent_support(self.request)
 
 def signup(request):
     if request.method == 'POST':

@@ -1,21 +1,12 @@
 import unittest
-import tempfile
-from PIL import Image
+
 from django.contrib.auth.models import User
-from django.core.files import File
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client
-
-
-import datetime as idt
-
-from rest_framework.test import MockOriginalResponse as response, APITestCase
+from rest_framework.test import APIRequestFactory
+from rest_framework.test import APITestCase
 from rest_framework.test import RequestsClient
 from rest_framework.test import force_authenticate
-from rest_framework.test import APIRequestFactory
 
 from zad.api_views import Url
-from zad.api_views import File as ApiFile
 from zad.models import CustomerUrl, CustomerFile
 from zad.utils import password_generator
 
@@ -84,9 +75,8 @@ class TestUrlPostMethod(unittest.TestCase):
 
 class TestFilePutMethod(APITestCase):
     def setUp(self):
-        file = open("test_file", 'w+')
-        mylist = file.readlines()
-        CustomerFile.objects.create(file=mylist, password="111111")
+
+        CustomerFile.objects.create(file=mock_file(), password="111111")
 
     def test_put_file(self):
 
@@ -99,9 +89,7 @@ class TestFilePutMethod(APITestCase):
 
 class TestFilePostMethod(unittest.TestCase):
     def setUp(self):
-        file = open("test_file", 'w+')
-        mylist = file.readlines()
-        customer_file = CustomerFile.objects.create(file=mylist, password="")
+        customer_file = CustomerFile.objects.create(file=mock_file(), password="")
         file_url = customer_file.get_absolute_url()
         self.user = User.objects.create(username='b', password="123456Mp")
         self.post_data = {"url": file_url}
@@ -113,3 +101,11 @@ class TestFilePostMethod(unittest.TestCase):
         view = Url.as_view()
         response = view(request)
         assert response.status_code == 201
+
+
+def mock_file():
+    file = open("test_file", 'w+')
+    mylist = file.readlines()
+    return mylist
+
+

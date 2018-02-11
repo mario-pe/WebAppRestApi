@@ -33,6 +33,7 @@ class Url(APIView):
 
 
 class GetUrl(APIView):
+
     permission_classes = (AllowAny,)
 
     def put(self, request, format=None):
@@ -74,8 +75,10 @@ class File(APIView):
 
 
 class GetFile(APIView):
+
     authentication_classes = (BasicAuthentication,)
     permission_classes = (AllowAny,)
+
     def put(self, request, format=None):
         user_agent_support(request)
         data = JSONParser().parse(request)
@@ -102,34 +105,35 @@ class GetFile(APIView):
 
 
 class ActivityArchiveApi(APIView):
+
     def get(self, request, date_from, date_to):
         user_agent_support(request)
         datetime_from = datetime.strptime(str(date_from), "%Y-%m-%d")
-        datetime_to = datetime.strptime(str(date_to), "%Y-%m-%d")
-        delta = datetime_to - datetime_from;
+        datetime_to_a = datetime.strptime(str(date_to), "%Y-%m-%d")
+        delta = datetime_to_a - datetime_from;
         today_date = datetime.utcnow().strftime('%Y-%m-%d')
+
         response = {}
 
         for x in range(0, delta.days + 1 ):
-            datetime_to = datetime_from.__str__()
-            datetime_to = datetime_to[:-9]
-            archive = ActivityArchive.objects.filter(date=datetime_to).first()
+            date_from_str = datetime_from.__str__()
+            date_from_str = date_from_str[:-9]
+            archive = ActivityArchive.objects.filter(date=date_from_str).first()
 
             if archive is not None:
-                if datetime_to == today_date:
+                if date_from_str == today_date:
                     url = archive.url_activity
                     file = archive.file_activity
                     result = activity_statistcs(url, file)
-                    reponse_for_day = {datetime_to.__str__():{'files': result[0], 'links': result[1]}}
+                    reponse_for_day = {'files': result[0], 'links': result[1]}
                 else:
                     result = daily_statisctic_generator(archive)
-                    reponse_for_day = {datetime_to.__str__(): {'files': result[0], 'links': result[1]}}
+                    reponse_for_day = {'files': result[0], 'links': result[1]}
             else:
-                reponse_for_day = {datetime_to.__str__(): {'files': 0, 'links': 0}}
+                reponse_for_day = {'files': 0, 'links': 0}
 
-            datetime_from =  datetime_from + idt.timedelta(hours=24)
-
-            response[datetime_to.__str__()] = reponse_for_day
+            datetime_from = datetime_from + idt.timedelta(hours=24)
+            response[date_from_str.__str__()] = reponse_for_day
 
         return JsonResponse(response)
 

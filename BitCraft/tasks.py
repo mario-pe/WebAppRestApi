@@ -18,8 +18,8 @@ logger = get_task_logger(__name__)
 @periodic_task(run_every=timedelta(seconds=10))
 def DB_clener():
     delta = idt.datetime.now() - idt.timedelta(hours=24)
-    CustomerFile.objects.filter(date__lte=delta).delete
-    files = CustomerUrl.objects.filter(date__lte=delta)
+    CustomerUrl.objects.filter(date__lte=delta).delete
+    files = CustomerFile.objects.filter(date__lte=delta)
     if files is not None and len(files) > 0:
         for f in files:
             os.remove('media/' + f.file.name)

@@ -12,7 +12,8 @@ nastepnie postepuj zgodnie z punktami
 4) cd BitCraft/
 5) python manage.py makemigrations
 6) python manage.py migrate
-7)python manage.py runserver
+7) python manage.py test  - polecenie to uruchomi testy jednostkowe
+8) python manage.py runserver
 
 w drugim terminalu nalezy przejsc do katalogu zawierajacego projekt wpisac polecenie:
 

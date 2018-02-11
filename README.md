@@ -2,11 +2,11 @@ Instrukcja startu aplikacji pod systemem operacyjnym Linux
 
 W terminalu utworz nowy katalog w ktorym znajdzie sie projekt:
 
-mkdir MariuszPerkowski
+mkdir ale_super_project
 
 nastepnie postepuj zgodnie z punktami
 
-1) cd MariuszPerkowski
+1) cd ale_super_project
 2) git init
 3) git clone https://github.com/mario-pe/BitCraft.git
 4) cd BitCraft/

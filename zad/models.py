@@ -1,12 +1,13 @@
 from django.db import models
 from datetime import datetime
 from django.core.urlresolvers import reverse
+from django import utils
 
 
 class CustomerUrl(models.Model):
     url = models.TextField()
     password = models.CharField(max_length=15)
-    date = models.DateTimeField(default=datetime.now())
+    date = models.DateTimeField(default=utils.timezone.now)
     counter = models.IntegerField(default=0, blank=True, null=True)
 
     def __str__(self):
@@ -19,7 +20,7 @@ class CustomerUrl(models.Model):
 class CustomerFile(models.Model):
     file = models.FileField(upload_to="Doc/", default='Doc/None/no-doc.pdf')
     password = models.CharField(max_length=15)
-    date = models.DateTimeField(default=datetime.now())
+    date = models.DateTimeField(default=utils.timezone.now)
     counter = models.IntegerField(default=0, blank=True, null=True)
 
     def __str__(self):

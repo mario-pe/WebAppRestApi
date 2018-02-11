@@ -42,12 +42,12 @@ class GetUrl(APIView):
         request_url = data['url']
 
         if request_url[-1:] == "/":
-            r_url = request_url[:-1]
-            p_url = r_url.split('/')
-            id = p_url[-1]
+            url = request_url[:-1]
+            splited_url = url.split('/')
+            id = splited_url[-1]
         else:
-            p_url = request_url.split('/')
-            id = p_url[-1]
+            splited_url = request_url.split('/')
+            id = splited_url[-1]
         try:
             instance = CustomerUrl.objects.get(pk=id)
         except CustomerUrl.DoesNotExist:
@@ -85,12 +85,12 @@ class GetFile(APIView):
         request_password = data['password']
         request_url = data['url']
         if request_url[-1:] == "/":
-            r_url = request_url[:-1]
-            p_url = r_url.split('/')
-            id = p_url[-1]
+            url = request_url[:-1]
+            splited_url = url.split('/')
+            id = splited_url[-1]
         else:
-            p_url = request_url.split('/')
-            id = p_url[-1]
+            splited_url = request_url.split('/')
+            id = splited_url[-1]
         try:
             instance = CustomerFile.objects.get(pk=id)
         except CustomerFile.DoesNotExist:
@@ -136,7 +136,3 @@ class ActivityArchiveApi(APIView):
             response[date_from_str.__str__()] = reponse_for_day
 
         return JsonResponse(response)
-
-
-
-

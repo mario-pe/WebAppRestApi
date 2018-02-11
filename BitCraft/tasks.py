@@ -17,6 +17,7 @@ logger = get_task_logger(__name__)
 @app.task
 @periodic_task(run_every=timedelta(seconds=10))
 def DB_clener():
+
     delta = idt.datetime.now() - idt.timedelta(hours=24)
     CustomerUrl.objects.filter(date__lte=delta).delete
     files = CustomerFile.objects.filter(date__lte=delta)

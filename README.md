@@ -1,4 +1,4 @@
-Instrukcja startu aplikacji Linux
+Instrukcja startu aplikacji pod systemem operacyjnym Linux
 
 W terminalu utworz nowy katalog w ktorym znajdzie sie projekt:
 

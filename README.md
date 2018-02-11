@@ -1,3 +1,26 @@
+Instrukcja startu aplikacji Linux
+
+W terminalu utworz nowy katalog w ktorym znajdzie sie projekt:
+
+mkdir MariuszPerkowski
+
+nastepnie postepuj zgodnie z punktami
+
+1) cd BitCraft
+2) git init
+3) git clone https://github.com/mario-pe/BitCraft.git
+4) cd BitCraft/
+5) python manage.py makemigrations
+6) python manage.py migrate
+7)python manage.py runserver
+
+w drugim terminalu nalezy przejsc do katalogu zawierajacego projekt wpisac polecenie:
+
+  celery -A BitCraft worker --loglevel=info --beat
+
+uruchomi ono watki odpowiedzialne za czyszczenie bazy oraz przygotowywanie statystyk.
+Teraz aplikacja powinna dzialac, wrazie problemow prosze o kontakt. 
+
 Instrukcja do API
 
 dodanie Url:

@@ -20,7 +20,7 @@ w drugim terminalu nalezy przejsc do katalogu zawierajacego projekt wpisac polec
   celery -A BitCraft worker --loglevel=info --beat
 
 uruchomi ono watki odpowiedzialne za czyszczenie bazy oraz przygotowywanie statystyk.
-Teraz aplikacja powinna dzialac, wrazie problemow prosze o kontakt. 
+Teraz aplikacja powinna dzialac. W razie problemow prosze o kontakt. 
 
 Instrukcja do API
 

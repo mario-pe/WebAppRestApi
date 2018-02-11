@@ -6,7 +6,7 @@ mkdir MariuszPerkowski
 
 nastepnie postepuj zgodnie z punktami
 
-1) cd BitCraft
+1) cd MariuszPerkowski
 2) git init
 3) git clone https://github.com/mario-pe/BitCraft.git
 4) cd BitCraft/

@@ -105,6 +105,9 @@ class GetFile(APIView):
 
 
 class ActivityArchiveApi(APIView):
+    
+    authentication_classes = (BasicAuthentication,)
+    permission_classes = (AllowAny,)
 
     def get(self, request, date_from, date_to):
         user_agent_support(request)

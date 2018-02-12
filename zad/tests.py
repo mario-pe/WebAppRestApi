@@ -13,25 +13,31 @@ from zad.utils import password_generator
 
 class TestDB(unittest.TestCase):
     def setUp(self):
-        password1 = password_generator()
-        CustomerUrl.objects.create(url="http://www.testUrl.pl", date="2017-11-05", password=password1)
+        self.password = password_generator()
+        CustomerUrl.objects.create(url="http://www.testUrl.pl", date="2017-11-05", password=password_generator())
+        CustomerFile.objects.create(file=mock_file(), password=self.password)
 
     def test_add_to_database(self):
-        instance = CustomerUrl.objects.get(url="http://www.testUrl.pl")
-        self.assertEqual(instance.url, "http://www.testUrl.pl")
+        instance_url = CustomerUrl.objects.filter(url="http://www.testUrl.pl").first()
+        instance_file = CustomerFile.objects.create(url="http://www.testUrl.pl").first()
+        self.assertEqual(instance_url.url, "http://www.testUrl.pl")
+        self.assertEqual(instance_file.password, self.password)
 
 
-class TestDeferentPasswords(unittest.TestCase):
+class TestPasswords(unittest.TestCase):
     def setUp(self):
-        password1 = password_generator()
-        password2 = password_generator()
-        CustomerUrl.objects.create(url="http://www.testUrl_1.pl", date="2017-11-07", password=password1)
-        CustomerUrl.objects.create(url="http://www.testUrl_2.pl", date="2017-11-07", counter=0, password=password2)
+        CustomerUrl.objects.create(url="http://www.testUrl_1.pl", date="2017-11-07", password=password_generator())
+        CustomerUrl.objects.create(url="http://www.testUrl_2.pl", date="2017-11-07", counter=0, password=password_generator())
+        CustomerFile.objects.create(file=mock_file(), password=password_generator())
+        CustomerFile.objects.create(file=mock_file(), password=password_generator())
 
     def test_deferent_passwords(self):
-        instance1 = CustomerUrl.objects.get(url="http://www.testUrl_2.pl")
-        instance2 = CustomerUrl.objects.get(url="http://www.testUrl_1.pl")
-        self.assertNotEqual(instance1.password, instance2.password)
+        instance_url_1 = CustomerUrl.objects.filter(url="http://www.testUrl_2.pl").first()
+        instance_url_2 = CustomerUrl.objects.filter(url="http://www.testUrl_1.pl").first()
+        instance_file_1 = CustomerUrl.objects.filter(url="http://www.testUrl_1.pl").first()
+        instance_file_2 = CustomerUrl.objects.filter(url="http://www.testUrl_1.pl").first()
+        self.assertNotEqual(instance_url_1.password, instance_url_2.password)
+        self.assertNotEqual(instance_file_1.password, instance_file_2.password)
 
 
 class TestDate(unittest.TestCase):

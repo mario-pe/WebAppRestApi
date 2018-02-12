@@ -10,7 +10,6 @@ from rest_framework import routers
 from django.conf.urls import include
 
 router = routers.DefaultRouter()
-# router.register(r'/api', api_views.Url.as_view())
 
 
 app_name = 'zad'
@@ -18,9 +17,11 @@ app_name = 'zad'
 urlpatterns = [
     # index /zad
     url(r'^$', views.index, name='index'),
+    url(r'^index/$', views.index, name='index'),
     url(r'^home/$', views.home, name='home'),
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout, {'template_name': 'zad/logged_out.html'}, name='logout'),
+    url(r'^logout-then-login/$', auth_views.logout_then_login, name='logout_then_login'),
     url(r'^admin/', admin.site.urls),
     url(r'^signup/$', views.signup, name='signup'),
 

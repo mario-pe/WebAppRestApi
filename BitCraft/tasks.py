@@ -1,15 +1,15 @@
 from __future__ import absolute_import, unicode_literals
 
-from datetime import timedelta
-import datetime as idt
-
 import os
+from datetime import timedelta
+
 from celery.task import periodic_task
 from celery.utils.log import get_task_logger
+from django.utils import timezone
 
-from zad.utils import activity_statistcs, daily_statisctic_generator
+from zad.models import CustomerUrl, CustomerFile
+from zad.utils import daily_statisctic_generator
 from .celery import app
-from zad.models import CustomerUrl, CustomerFile, ActivityArchive
 
 logger = get_task_logger(__name__)
 
@@ -17,7 +17,7 @@ logger = get_task_logger(__name__)
 @app.task
 @periodic_task(run_every=timedelta(seconds=10))
 def DB_clener():
-    delta = idt.datetime.now() - idt.timedelta(hours=24)
+    delta = timezone.now() - timedelta(hours=24)
     CustomerUrl.objects.filter(date__lte=delta).delete
     files = CustomerFile.objects.filter(date__lte=delta)
     if files is not None and len(files) > 0:

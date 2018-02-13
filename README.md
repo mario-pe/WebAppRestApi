@@ -25,14 +25,14 @@ Teraz aplikacja powinna dzialac. W razie problemow prosze o kontakt.
 Instrukcja do API
 
 dodanie Url:
-a adres  http://127.0.0.1:8000/zad/get_url/ metoda POST należy przeslac adres który zostanie zachowany oraz zabezpieczony 
+na adres  http://127.0.0.1:8000/zad/get_url/ metoda POST należy przeslac adres który zostanie zachowany oraz zabezpieczony 
 
 {
         "url": "https://www.google.pl/"
     }
 
 pobranie pliku:
-na adres http://127.0.0.1:8000/zad/get_file/ metoda PUT należy przeslac request w body powinien znalezc
+na adres http://127.0.0.1:8000/zad/get_file/ metoda PUT należy przeslac request w body powinien znalezc wygenrowany adres do zasobu oraz poprawne hasło
  
  {
         "url": "/zad/details_url/165/",

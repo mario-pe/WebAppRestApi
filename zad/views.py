@@ -102,7 +102,6 @@ class ActionFile(FormView):
 
         if password == instance.password:
             update_counter(instance)
-            update_archive_file(instance)
             instance_file = instance.file
             filename = instance_file.file.name.split('/')[-1]
             response = HttpResponse(instance_file.file, content_type='text/plain')
@@ -128,7 +127,6 @@ class ActionUrl(FormView):
         instance_url = instance.url
         if password == instance.password:
             update_counter(instance)
-            update_archive_url(instance)
         else:
             return redirect(instance.get_absolute_url())
 

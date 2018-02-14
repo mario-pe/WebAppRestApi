@@ -29,11 +29,3 @@ class CustomerFile(models.Model):
     def get_absolute_url(self):
         return reverse("zad:customer_file_details", kwargs={"id": self.id})
 
-
-class ActivityArchive(models.Model):
-    date = models.DateField(default=datetime.now().strftime("%Y-%m-%d"), blank=True, null=True)
-    url_activity = models.TextField()
-    file_activity = models.TextField()
-
-    def __str__(self):
-        return '{}, {}, {}'.format(self.date, self.url_activity, self.file_activity)

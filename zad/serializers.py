@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomerUrl, CustomerFile, ActivityArchive
+from .models import CustomerUrl, CustomerFile
 
 
 class CustomerUrlSerializer(serializers.ModelSerializer):
@@ -15,10 +15,3 @@ class CustomerFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerFile
         fields = ('file',)
-
-
-class ActivityArchiveSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = ActivityArchive
-        fields = ('date', 'url_activity', 'file_activity')

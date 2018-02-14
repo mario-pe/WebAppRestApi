@@ -38,7 +38,6 @@ urlpatterns = [
     url(r'^files/$', api_views.File.as_view()),
     url(r'^get_file/$', api_views.GetFile.as_view()),
     url(r'^get_url/$', api_views.GetUrl.as_view()),
-    url(r'^archive/(?P<date_from>.+)/(?P<date_to>.+)/$', api_views.ActivityArchiveApi.as_view()),
 
     url(r'^api-auth/', include('rest_framework.urls')),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

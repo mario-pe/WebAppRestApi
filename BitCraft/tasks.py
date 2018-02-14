@@ -8,7 +8,6 @@ from celery.utils.log import get_task_logger
 from django.utils import timezone
 
 from zad.models import CustomerUrl, CustomerFile
-from zad.utils import daily_statisctic_generator
 from .celery import app
 
 logger = get_task_logger(__name__)
@@ -25,11 +24,5 @@ def DB_clener():
             os.remove('media/' + f.file.name)
         files.delete()
 
-
-@app.task
-@periodic_task(run_every=timedelta(hours=24))
-def statistic():
-    archive = daily_statisctic_generator(hours=24)
-    archive.save()
 
 

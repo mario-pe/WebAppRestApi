@@ -1,6 +1,5 @@
-from datetime import datetime
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.parsers import JSONParser
@@ -56,7 +55,6 @@ class GetUrl(APIView):
         serializer = CustomerUrlSerializer(instance)
         if request_password == instance.password:
             update_counter(instance)
-            update_archive_url(instance)
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
@@ -99,43 +97,8 @@ class GetFile(APIView):
         serializer = CustomerFileSerializer(instance)
         if request_password == instance.password:
             update_counter(instance)
-            update_archive_file(instance)
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
 
-class ActivityArchiveApi(APIView):
-    
-    authentication_classes = (BasicAuthentication,)
-    permission_classes = (AllowAny,)
 
-    def get(self, request, date_from, date_to):
-        user_agent_support(request)
-        datetime_from = datetime.strptime(str(date_from), "%Y-%m-%d")
-        datetime_to_a = datetime.strptime(str(date_to), "%Y-%m-%d")
-        delta = datetime_to_a - datetime_from;
-        today_date = datetime.utcnow().strftime('%Y-%m-%d')
-
-        response = {}
-
-        for x in range(0, delta.days + 1 ):
-            date_from_str = datetime_from.__str__()
-            date_from_str = date_from_str[:-9]
-            archive = ActivityArchive.objects.filter(date=date_from_str).first()
-
-            if archive is not None:
-                if date_from_str == today_date:
-                    url = archive.url_activity
-                    file = archive.file_activity
-                    result = activity_statistcs(url, file)
-                    reponse_for_day = {'files': result[0], 'links': result[1]}
-                else:
-                    result = daily_statisctic_generator(archive)
-                    reponse_for_day = {'files': result[0], 'links': result[1]}
-            else:
-                reponse_for_day = {'files': 0, 'links': 0}
-
-            datetime_from = datetime_from + idt.timedelta(hours=24)
-            response[date_from_str.__str__()] = reponse_for_day
-
-        return JsonResponse(response)

@@ -8,8 +8,8 @@ nastepnie postepuj zgodnie z punktami
 
 1) cd ale_super_project
 2) git init
-3) git clone https://github.com/mario-pe/BitCraft.git
-4) cd BitCraft/
+3) git clone https://github.com/mario-pe/WebAppRestApi.git
+4) cd WebAppRestApi/
 5) python manage.py makemigrations
 6) python manage.py migrate
 7) python manage.py test  - polecenie to uruchomi testy jednostkowe

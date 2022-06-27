@@ -80,7 +80,7 @@ pytz==2018.3
 pyxdg==0.25
 PyYAML==3.12
 redis==2.10.6
-reportlab==3.3.0
+reportlab==3.5.55
 requests==2.11.1
 requests-toolbelt==0.7.0
 rsa==3.4.2
